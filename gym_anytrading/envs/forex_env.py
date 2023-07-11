@@ -19,7 +19,9 @@ class ForexEnv(TradingEnv):
     def _process_data(self):
         prices = self.df.loc[:, 'Close'].to_numpy()
 
-        prices[self.frame_bound[0] - self.window_size]  # validate index (TODO: Improve validation)
+        if not 0 <= self.frame_bound[0] - self.window_size < len(prices):  # validate index
+            raise IndexError()
+
         prices = prices[self.frame_bound[0]-self.window_size:self.frame_bound[1]]
 
         diff = np.insert(np.diff(prices), 0, 0)
